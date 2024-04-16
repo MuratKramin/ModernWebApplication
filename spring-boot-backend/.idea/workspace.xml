@@ -4,7 +4,45 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="495bd92b-9d32-45e1-aaf1-fd1e1df7c675" name="Changes" comment="" />
+    <list default="true" id="495bd92b-9d32-45e1-aaf1-fd1e1df7c675" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/SpringBootBackendApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/SpringBootBackendApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/advice/ErrorMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/advice/ErrorMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/advice/TokenControllerAdvice.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/advice/TokenControllerAdvice.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/controllers/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/controllers/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/controllers/HotelController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/controllers/HotelController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/controllers/TestController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/controllers/TestController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/controllers/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/controllers/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/exception/TokenRefreshException.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/exception/TokenRefreshException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/models/ERole.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/models/ERole.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/models/Hotel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/models/Hotel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/models/Photo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/models/Photo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/models/RefreshToken.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/models/RefreshToken.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/models/ResidenceHistory.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/models/ResidenceHistory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/models/Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/models/Role.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/models/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/models/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/request/LoginRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/request/LoginRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/request/SignupRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/request/SignupRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/request/TokenRefreshRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/request/TokenRefreshRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/response/JwtResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/response/JwtResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/response/MessageResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/response/MessageResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/response/TokenRefreshResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/payload/response/TokenRefreshResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/HotelRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/HotelRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/PhotoRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/PhotoRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/RefreshTokenRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/RefreshTokenRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/ResidenceHistoryRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/ResidenceHistoryRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/RoleRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/RoleRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/repository/UserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/security/WebSecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/security/WebSecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/security/jwt/AuthEntryPointJwt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/security/jwt/AuthEntryPointJwt.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/security/jwt/AuthTokenFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/security/jwt/AuthTokenFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/security/jwt/JwtUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/security/jwt/JwtUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/security/services/RefreshTokenService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/security/services/RefreshTokenService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/security/services/UserDetailsImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/security/services/UserDetailsImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/spring/backend/security/services/UserDetailsServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/spring/backend/security/services/UserDetailsServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/spring/backend/SpringBootSecurityJwtApplicationTests.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/spring/backend/controllers/AuthControllerTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/spring/backend/controllers/AuthControllerTest.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +58,18 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/pom.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/spring/backend/SpringBootBackendApplication.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/test/java/com/spring/backend/controllers/AuthControllerTest.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/spring/backend/security/jwt/AuthTokenFilter.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/spring/backend/security/jwt/AuthEntryPointJwt.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/spring/backend/security/jwt/JwtUtils.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/spring/backend/security/services/UserDetailsImpl.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/spring/backend/security/services/RefreshTokenService.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/spring/backend/security/services/UserDetailsServiceImpl.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/spring/backend/repository/HotelRepository.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -58,7 +108,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="editing.templates" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunManager" selected="Spring Boot.SpringBootBackendApplication">
     <configuration name="SpringBootBackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
@@ -124,6 +174,12 @@
       <workItem from="1703261582747" duration="15000" />
       <workItem from="1703261611032" duration="2321000" />
       <workItem from="1703263974541" duration="294000" />
+      <workItem from="1703267161895" duration="1298000" />
+      <workItem from="1706563653220" duration="3000" />
+      <workItem from="1710615358905" duration="61000" />
+      <workItem from="1710791260353" duration="824000" />
+      <workItem from="1711566418693" duration="391000" />
+      <workItem from="1711566877788" duration="855000" />
     </task>
     <servers />
   </component>
