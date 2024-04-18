@@ -3,14 +3,21 @@ package com.spring.backend.controllers;
 
 import com.spring.backend.models.Hotel;
 import com.spring.backend.repository.HotelRepository;
+import com.spring.backend.repository.ResidenceHistoryRepository;
+import com.spring.backend.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -95,4 +102,83 @@ public class HotelController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @Autowired
+    private ResidenceHistoryRepository residenceHistoryRepository;
+
+    @Autowired
+    private HotelService hotelService;
+
+    @GetMapping("/findHotels")
+    public ResponseEntity<List<Hotel>> getAllHotels(@RequestParam(value = "qty",required = false,defaultValue = "0") int qty,
+                                                    @RequestParam(value = "days",required = false,defaultValue = "0") int days,
+                                                    @RequestParam(value = "campaign",required = false) String campaign,
+                                                    @RequestParam(value = "children",required = false,defaultValue = "0") int children ,
+
+                                                    @RequestParam(value = "comfort",required = false,defaultValue = "0") int comfort ,
+                                                    @RequestParam(value = "distance",required = false,defaultValue = "0") int distance ,
+                                                    @RequestParam(value = "price",required = false,defaultValue = "0") int price ,
+                                                    @RequestParam(value = "activity",required = false,defaultValue = "0") int activity ,
+                                                    @RequestParam(value = "safety",required = false,defaultValue = "0") int safety ,
+
+                                                    @RequestParam(value = "active_recreation_on_the_water",required = false,defaultValue = "0") int active_recreation_on_the_water,
+                                                    @RequestParam(value = "fishing",required = false,defaultValue = "0") int fishing,
+                                                    @RequestParam(value = "football",required = false,defaultValue = "0") int football,
+                                                    @RequestParam(value = "volleyball",required = false,defaultValue = "0") int volleyball,
+                                                    @RequestParam(value = "table_tennis",required = false,defaultValue = "0") int table_tennis,
+                                                    @RequestParam(value = "tennis",required = false,defaultValue = "0") int tennis,
+                                                    @RequestParam(value = "cycling",required = false,defaultValue = "0") int cycling,
+
+                                                    @RequestParam(value = "distance_from_Kazan",required = false,defaultValue = "100000") int distance_from_Kazan,
+                                                    @RequestParam(value = "cost_of_stay_per_day",required = false,defaultValue = "100000") int cost_of_stay_per_day
+    ) {
+
+        System.out.println(cost_of_stay_per_day);
+        System.out.println(distance_from_Kazan);
+        System.out.println(days);
+
+        if(tennis!=0 || tennis!=1) tennis=0;
+
+        int family  = (campaign!=null&&campaign.equals("family")) ? 1:0;
+        int the_youth  = (campaign!=null&&campaign.equals("the_youth")) ? 1:0;
+        int old_friends  = (campaign!=null&&campaign.equals("old_friends")) ? 1:0;
+        List<Hotel> hotels=hotelService.getBestHotels(family,
+                children,
+                the_youth,
+                old_friends,
+                comfort,
+                distance,
+                price,
+                activity,
+                safety,
+                active_recreation_on_the_water,
+                fishing,
+                football,
+                volleyball,
+                table_tennis,
+                tennis,
+                cycling,
+                distance_from_Kazan,
+                cost_of_stay_per_day,1,1,1,1,1,qty,days);
+
+        System.out.println("Идёт запрос");
+
+//        if (hotels.isEmpty()) {
+//            hotels = hotelRepository.AllHotelsSortById();
+//
+//        }
+
+        for (Hotel i: hotels){
+            System.out.println(i.getName());
+        }
+        if (hotels.isEmpty()) {
+            System.out.println("неееет");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        }
+        return new ResponseEntity<>(hotels, HttpStatus.OK);
+    }
+
+
 }

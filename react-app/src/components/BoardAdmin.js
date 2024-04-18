@@ -96,7 +96,7 @@ const BoardAdmin = () => {
       });
   };
 
-  if (content=="") {
+  if (content==="") {
     return <div>Loading...</div>;
   }
   else
