@@ -27,7 +27,7 @@ const Home = () => {
     tennis: false,
     cycling: false,
     distance_from_Kazan: '0',
-    cost_of_stay_per_day: '0'
+    budget: '0'
   });
 
   useEffect(() => {
@@ -167,8 +167,8 @@ const Home = () => {
               <input type="text" name="distance_from_Kazan" id="distance_from_Kazan" value={formData.distance_from_Kazan} onChange={handleChange} />
             </div>
             <div>
-              <label htmlFor="cost_of_stay_per_day">Максимальный бюджет (руб.):</label>
-              <input type="text" name="cost_of_stay_per_day" id="cost_of_stay_per_day" value={formData.cost_of_stay_per_day} onChange={handleChange} />
+              <label htmlFor="budget">Максимальный бюджет (руб.):</label>
+              <input type="text" name="budget" id="budget" value={formData.budget} onChange={handleChange} />
             </div>
             <input type="submit" value="Search Hotels" />
           </form>

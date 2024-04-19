@@ -8,16 +8,11 @@ import com.spring.backend.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -131,10 +126,10 @@ public class HotelController {
                                                     @RequestParam(value = "cycling",required = false,defaultValue = "0") int cycling,
 
                                                     @RequestParam(value = "distance_from_Kazan",required = false,defaultValue = "100000") int distance_from_Kazan,
-                                                    @RequestParam(value = "cost_of_stay_per_day",required = false,defaultValue = "100000") int cost_of_stay_per_day
+                                                    @RequestParam(value = "budget",required = false,defaultValue = "100000") int budget
     ) {
 
-        System.out.println(cost_of_stay_per_day);
+        System.out.println(budget);
         System.out.println(distance_from_Kazan);
         System.out.println(days);
 
@@ -160,7 +155,7 @@ public class HotelController {
                 tennis,
                 cycling,
                 distance_from_Kazan,
-                cost_of_stay_per_day,1,1,1,1,1,qty,days);
+                budget,1,1,1,1,1,qty,days);
 
         System.out.println("Идёт запрос");
 
