@@ -1,5 +1,6 @@
 package com.spring.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -11,13 +12,12 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@Table(	name = "users", 
-		uniqueConstraints = { 
-			@UniqueConstraint(columnNames = "username"),
-			@UniqueConstraint(columnNames = "email") 
-		})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
+@Table(	name = "users")
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,9 +44,10 @@ public class User {
 
 
 
-	@JsonIgnore
+	//@JsonIgnore
 	//@JsonManagedReference
-	@OneToMany(mappedBy = "user_rev",fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user_rev")
+	@JsonManagedReference("user-back-ref")
 	private List<ResidenceHistory> residenceHistoryList;
 
 	public List<ResidenceHistory> getResidenceHistoryList() {

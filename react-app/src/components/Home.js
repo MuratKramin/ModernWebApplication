@@ -176,10 +176,13 @@ const Home = () => {
           <div>
             {Array.isArray(content2) && content2.map(hotel => (
                 <div key={hotel.id}>
-                  <h2>{hotel.name}</h2>
-                  <img src={hotel.photoList[0] ? hotel.photoList[0].link : ''} alt={hotel.name} />
+
+                  <Link to={`/hotel/${hotel.id}`}><h2>{hotel.name}</h2>
+                    <img src={hotel.photoList[0] ? hotel.photoList[0].link : ''} alt={hotel.name} />
+                  </Link>
+
                   <p style={{ whiteSpace: 'pre-line' }}>{hotel.description}</p>
-                  <Link to={`/hotel/${hotel.id}`}>View Details</Link>
+
                 </div>
             )) || <div> <h3>Упс! Нет подходящих отелей </h3> </div>}
           </div>

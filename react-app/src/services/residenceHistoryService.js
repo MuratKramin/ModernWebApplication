@@ -12,7 +12,11 @@ class ResidenceHistoryService {
     }
 
     createResidenceHistory(data) {
-        return axios.post(API_URL, data);
+        return axios.post(API_URL, data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 
     updateResidenceHistory(id, data) {

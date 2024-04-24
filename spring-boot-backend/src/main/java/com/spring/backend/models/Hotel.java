@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "Hotels")
+@Table(name = "hotels")
 public class Hotel {
     @Id
     @Column(name="id")
@@ -41,14 +41,14 @@ public class Hotel {
     @Column (name = "main_feature")
     private String main_feature;
 
-    @JsonIgnore
-    @JsonManagedReference
+    //@JsonIgnore
+    @JsonManagedReference("hotel-photo-ref")
     @OneToMany(mappedBy = "hotel_pic")
     private List<Photo> photoList;
 
-    @JsonIgnore
-    @JsonManagedReference
+    //@JsonIgnore
     @OneToMany(mappedBy = "hotel_rev")
+    @JsonManagedReference("hotel-back-ref")
     private List<ResidenceHistory> residenceHistoryList;
 
     public List<ResidenceHistory> getResidenceHistoryList() {

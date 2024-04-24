@@ -38,7 +38,7 @@ public class HotelController {
     // Получение всех отелей
     @GetMapping
     public ResponseEntity<List<Hotel>> getAllHotels() {
-        List<Hotel> hotels = hotelRepository.findAll();
+        List<Hotel> hotels = hotelRepository.AllHotelsSortById();
         if (hotels.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

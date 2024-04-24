@@ -13,7 +13,7 @@ public class Photo {
     private int id;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("hotel-photo-ref")
     @JoinColumn(name = "id_hotel")
     private Hotel hotel_pic;
     @Column(name="link")

@@ -1,13 +1,16 @@
 package com.spring.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 
 import java.sql.Date;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "residence_history", schema = "public", catalog = "natural_navigator_rest")
 public class ResidenceHistory {
 
@@ -31,16 +34,16 @@ public class ResidenceHistory {
     @Column(name = "grade")
     private Integer grade;
 
-    @JsonIgnore
+
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("user-back-ref")
     @JoinColumn(name = "id_user")
     private User user_rev;
 
 
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("hotel-back-ref")
     @JoinColumn(name = "id_hotel")
     private Hotel hotel_rev;
 
