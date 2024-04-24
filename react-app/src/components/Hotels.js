@@ -29,6 +29,7 @@ function HotelDetails() {
   else{
     return (
         <div>
+            hi
           {hotel.map(hotel => (
               <div key={hotel.id}>
                 <h2>{hotel.name}</h2>

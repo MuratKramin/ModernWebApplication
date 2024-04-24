@@ -1,8 +1,10 @@
 package com.spring.backend.controllers;
 
 import com.spring.backend.models.ResidenceHistory;
+import com.spring.backend.repository.HotelRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +13,25 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/residenceHistories")
 public class ResidenceHistoryController {
 
     @Autowired
     private ResidenceHistoryRepository residenceHistoryRepository;
+
+    @Autowired
+    private HotelRepository hotelRepository;
+
+    @GetMapping("/byHotel/{hotelId}")
+    public ResponseEntity<List<ResidenceHistory>> getResidenceHistoriesByHotelId(@PathVariable int hotelId) {
+        List<ResidenceHistory> histories = hotelRepository.getReferenceById(hotelId).getResidenceHistoryList();
+        if(histories != null && !histories.isEmpty()) {
+            return ResponseEntity.ok(histories);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     // Получить список всех историй проживания
     @GetMapping

@@ -1,12 +1,14 @@
 package com.spring.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 import java.sql.Date;
 
 @Entity
-@Table(name = "residence_history", schema = "public", catalog = "natural_navigator_bd")
+@Table(name = "residence_history", schema = "public", catalog = "natural_navigator_rest")
 public class ResidenceHistory {
 
     @Id
@@ -28,10 +30,13 @@ public class ResidenceHistory {
     @Basic
     @Column(name = "grade")
     private Integer grade;
+
+    @JsonIgnore
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "id_user")
     private User user_rev;
+
 
 
     @ManyToOne

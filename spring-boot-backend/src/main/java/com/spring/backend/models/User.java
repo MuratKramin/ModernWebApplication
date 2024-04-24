@@ -1,6 +1,10 @@
 package com.spring.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -38,7 +42,33 @@ public class User {
 				inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
+
+
+	@JsonIgnore
+	//@JsonManagedReference
+	@OneToMany(mappedBy = "user_rev",fetch = FetchType.LAZY)
+	private List<ResidenceHistory> residenceHistoryList;
+
+	public List<ResidenceHistory> getResidenceHistoryList() {
+		return residenceHistoryList;
+	}
+
+	public void setResidenceHistoryList(List<ResidenceHistory> residenceHistoryList) {
+		this.residenceHistoryList = residenceHistoryList;
+	}
+
+
+
 	public User() {
+	}
+
+	public User(Long id, String username, String email, String password, Set<Role> roles, List<ResidenceHistory> residenceHistoryList) {
+		this.id = id;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.roles = roles;
+		this.residenceHistoryList = residenceHistoryList;
 	}
 
 	public User(String username, String email, String password) {
@@ -86,4 +116,8 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+//	public List<ResidenceHistory> getResidenceHistoryList() {
+//		return residenceHistoryList;
+//	}
 }

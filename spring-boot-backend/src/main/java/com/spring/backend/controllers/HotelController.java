@@ -2,6 +2,7 @@ package com.spring.backend.controllers;
 
 
 import com.spring.backend.models.Hotel;
+import com.spring.backend.models.ResidenceHistory;
 import com.spring.backend.repository.HotelRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
 import com.spring.backend.services.HotelService;
@@ -50,6 +51,8 @@ public class HotelController {
         System.out.println(stringList);
         return new ResponseEntity<>(stringList, HttpStatus.OK);
     }
+
+
 
     // Получение отеля по ID
     @GetMapping("/{id}")
@@ -101,6 +104,15 @@ public class HotelController {
 
     @Autowired
     private ResidenceHistoryRepository residenceHistoryRepository;
+
+    @GetMapping("/{id}/residenceHistory")
+    public ResponseEntity<List<ResidenceHistory>> getAllHotelsReviews(@PathVariable int id) {
+        List<ResidenceHistory> residenceHistoryList = hotelRepository.getReferenceById(id).getResidenceHistoryList();
+        if (residenceHistoryList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(residenceHistoryList, HttpStatus.OK);
+    }
 
     @Autowired
     private HotelService hotelService;

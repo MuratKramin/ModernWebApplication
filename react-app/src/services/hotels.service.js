@@ -12,6 +12,11 @@ const getStats = () => {
     return api.get("/hotels/stats");
 };
 
+const getResidenceHistory = (id) => {
+    return api.get(`/hotels/${id}/residenceHistory`);
+};
+
+
 const findHotels = ({
                         qty = "1",
                         days = "1",
@@ -60,7 +65,8 @@ const HotelService = {
     getHotel,
     getHotelById,
     getStats,
-    findHotels
+    findHotels,
+    getResidenceHistory
 };
 
 export default HotelService;
