@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import HotelService from '../services/hotels.service';
 import ResidenceHistoryService from '../services/residenceHistoryService';
 import AuthService from "../services/auth.service";
+import "./HotelDetails.css"; // Убедитесь, что путь к файлу CSS корректен
+
 
 
 function HotelDetails() {
@@ -64,54 +66,69 @@ function HotelDetails() {
     if (!hotel) {
         return <div>Loading...</div>;
     }
+    const mainImages = hotel.photoList?.slice(0, 2);
+    const otherImages = hotel.photoList?.slice(2);
 
     return (
-        <div>
-            <h2>{hotel.name}</h2>
-            <img src={hotel.photoList[0]?.link} alt={hotel.name} />
-            <p style={{ whiteSpace: 'pre-line' }}>{hotel.description}</p>
-            <Link to="/home">Back to list</Link>
-            <div>
+        <div className="container">
+            <div className="header">
+                {mainImages && mainImages.length > 0 && (
+                    <div className="images-sidebar">
+                        {mainImages.map((img, index) => (
+                            <img key={index} src={img.link} alt={`Hotel View ${index + 1}`} />
+                        ))}
+                    </div>
+                )}
+                <div className="header-info">
+                    <h2>{hotel.name}</h2>
+                    <p style={{ whiteSpace: 'pre-line' }}>{hotel.description}</p>
+                    <Link to="/home">Back to list</Link>
+                </div>
+            </div>
+            {otherImages && otherImages.length > 0 && (
+                <div className="main-images">
+                    {otherImages.map((img, index) => (
+                        <img key={index} src={img.link} alt={`Hotel View ${index + 3}`} />
+                    ))}
+                </div>
+            )}
+            <div className="review-container">
                 <h3>Reviews</h3>
-                {
-
-
-                    histories.map(history => (
-                    <div key={history.id}>
-                        <p>{history.review}</p>
-                        <p>Grade: {history.grade}</p>
+                {histories.map(history => (
+                    <div key={history.id} className="review">
+                        <div className="review-details">
+                            <p className="review-text">{history.review}</p>
+                        </div>
+                        <div className="review-grade">
+                            {history.grade}
+                        </div>
                     </div>
                 ))}
             </div>
             {currentUser && (
-                <div>
+                <div className="add-review-form">
                     <h4>Add your review:</h4>
-                    <label>
-                        Check-in:
-                        <input type="date" value={checkInDate} onChange={e => setCheckInDate(e.target.value)} />
-                    </label>
-                    <label>
-                        Check-out:
-                        <input type="date" value={checkOutDate} onChange={e => setCheckOutDate(e.target.value)} />
-                    </label>
-                    <label>
-                        total cost:
-                        <input type="number" value={totalCost} onChange={e => setTotalCost(e.target.value)} min="0" />
-                    </label>
-                    <label>
-                        Отзыв:
-                        <textarea value={newReview} onChange={e => setNewReview(e.target.value)} />
-                    </label>
-
-                    {/*<label>*/}
-                    {/*    Grade:*/}
-                    {/*    <input type="number" value={newGrade} min="1" max="5" onChange={e => setNewGrade(e.target.value)} />*/}
-                    {/*</label>*/}
-                    <label>
-                        Grade:
-                        <input type="range" value={newGrade} min="1" max="5" onChange={e => setNewGrade(e.target.value)} />
-                    </label>
-                    <button onClick={handleSubmitReview}>Submit Review</button>
+                    <div className="form-group">
+                        <label className="form-label">Check-in:</label>
+                        <input type="date" className="form-input" value={checkInDate} onChange={e => setCheckInDate(e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Check-out:</label>
+                        <input type="date" className="form-input" value={checkOutDate} onChange={e => setCheckOutDate(e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Total cost:</label>
+                        <input type="number" className="form-input" value={totalCost} onChange={e => setTotalCost(e.target.value)} min="0" />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Review:</label>
+                        <textarea className="form-textarea" value={newReview} onChange={e => setNewReview(e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Grade:</label>
+                        <input type="range" className="form-input" value={newGrade} min="1" max="5" onChange={e => setNewGrade(e.target.value)} />
+                    </div>
+                    <button className="form-button" onClick={handleSubmitReview}>Submit Review</button>
                 </div>
             )}
         </div>
