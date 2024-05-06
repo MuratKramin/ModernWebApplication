@@ -1,6 +1,7 @@
 package com.spring.backend.repository;
 
 import com.spring.backend.models.ResidenceHistory;
+import com.spring.backend.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,11 @@ import java.util.List;
 }*/
 @Repository
 public interface ResidenceHistoryRepository extends JpaRepository<ResidenceHistory,Integer> {
+
+    //List<ResidenceHistory> findByUserRev(User user);
+    //List<ResidenceHistory> findByUser(User user);
+    @Query(value = "SELECT * FROM residence_history WHERE id_user = ?1", nativeQuery = true)
+    List<ResidenceHistory> findByUserId(Long userId);
 
     @Modifying
     @Transactional

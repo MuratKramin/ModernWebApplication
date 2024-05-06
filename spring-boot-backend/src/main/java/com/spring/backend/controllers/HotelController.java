@@ -5,6 +5,7 @@ import com.spring.backend.models.Hotel;
 import com.spring.backend.models.ResidenceHistory;
 import com.spring.backend.repository.HotelRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
+import com.spring.backend.services.HotelRecommendationService;
 import com.spring.backend.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,8 @@ public class HotelController {
 
     @Autowired
     private HotelRepository hotelRepository;
+    @Autowired
+    private HotelRecommendationService hotelRecommendationService;
 
     // Создание нового отеля
     @PostMapping
@@ -39,6 +42,15 @@ public class HotelController {
     @GetMapping
     public ResponseEntity<List<Hotel>> getAllHotels() {
         List<Hotel> hotels = hotelRepository.AllHotelsSortById();
+        if (hotels.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(hotels, HttpStatus.OK);
+    }
+
+    @GetMapping("/getRecom")
+    public ResponseEntity<List<Hotel>> getRecom() {
+        List<Hotel> hotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(1));
         if (hotels.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
