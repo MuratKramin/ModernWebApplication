@@ -5,8 +5,11 @@ import com.spring.backend.models.Hotel;
 import com.spring.backend.models.ResidenceHistory;
 import com.spring.backend.repository.HotelRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
-import com.spring.backend.services.HotelRecommendationService;
-import com.spring.backend.services.HotelService;
+import com.spring.backend.services.*;
+import com.spring.backend.testAlorithms.BPRService;
+import com.spring.backend.testAlorithms.RecommendationService;
+import com.spring.backend.testAlorithms.RecommendationService2;
+import com.spring.backend.testAlorithms.RecommendationSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,16 @@ public class HotelController {
     private HotelRepository hotelRepository;
     @Autowired
     private HotelRecommendationService hotelRecommendationService;
+    @Autowired
+    private RecommendationSystem recommendationSystem;
+    @Autowired
+    private BPRService bprService;
+
+    @Autowired
+    private RecommendationService recommendationService;
+
+    @Autowired
+    private RecommendationService2 recommendationService2;
 
     // Создание нового отеля
     @PostMapping
@@ -50,7 +63,18 @@ public class HotelController {
 
     @GetMapping("/getRecom")
     public ResponseEntity<List<Hotel>> getRecom() {
+
+        //residenceHistoryRepository.findAll().forEach(residenceHistory -> System.out.println(residenceHistory.getGrade()));
         List<Hotel> hotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(1));
+        recommendationSystem.recommendHotels();
+        //bprService.recommendHotels();
+        //List<Hotel> rec =recommendationService.recommendHotels(Integer.toUnsignedLong(1),5);
+//        for(Hotel hotel:rec){
+//            System.out.println(hotel.getName());
+//        }
+        //recommendationService.recommendHotels();
+        recommendationService2.printRatingMatrix();
+        //recommendationService2.printPredictedRatingMatrix();
         if (hotels.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

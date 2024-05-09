@@ -1,6 +1,7 @@
 package com.spring.backend.repository;
 
 import com.spring.backend.models.Hotel;
+import com.spring.backend.models.ResidenceHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,8 @@ public interface HotelRepository extends JpaRepository<Hotel,Integer> {
 
     @Query(value = "select * from hotels  order by id",nativeQuery = true)
     List<Hotel> AllHotelsSortById();
+
+
 
     @Query(value = "select sum(family * (?1) +" +
             "children * sqrt(?2)" +

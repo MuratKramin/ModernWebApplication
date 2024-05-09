@@ -6,14 +6,17 @@ import com.spring.backend.models.User;
 import com.spring.backend.repository.HotelRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
 import com.spring.backend.repository.UserRepository;
+import com.spring.backend.testAlorithms.SvdRatingPredictor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.SingularValueDecomposition;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 public class HotelRecommendationService {
@@ -25,25 +28,108 @@ public class HotelRecommendationService {
     @Autowired
     private ResidenceHistoryRepository residenceHistoryRepository;
 
-    // Получение списка рекомендуемых отелей
+
+
+
+    private double[][] calculateSVD(Map<Integer, Map<Integer, Double>> matrix) {
+        // Переводим карту в массив для SVD
+        int numRows = matrix.size();
+        int numCols = matrix.values().stream().mapToInt(m -> m.size()).max().orElse(0);
+        double[][] data = new double[numRows][numCols];
+
+        for(int i=0;i<numRows;i++){
+            for(int j=0;j<numCols;j++){
+                Random random = new Random();
+                int randomNumber = random.nextInt(5) + 1; // Генерация числа от 0 до 4 и добавление 1 для получения числа от 1 до 5
+                data[i][j]=randomNumber;
+            }
+        }
+
+        int rowIndex = 0;
+        for (Map<Integer, Double> row : matrix.values()) {
+            int colIndex = 0;
+            for (Double value : row.values()) {
+                data[rowIndex][colIndex++] = value;
+            }
+            rowIndex++;
+        }
+        System.out.println("data:");
+        System.out.println(Arrays.deepToString(data));
+
+//        Array2DRowRealMatrix realMatrix = new Array2DRowRealMatrix(data);
+//        SingularValueDecomposition svd = new SingularValueDecomposition(realMatrix);
+
+        ////
+        SingularValueDecomposition svd = new SingularValueDecomposition(new Array2DRowRealMatrix(data));
+        double[][] estimatedRatings = svd.getSolver().getInverse().multiply(new Array2DRowRealMatrix(data)).getData();
+
+
+        System.out.println("estimated"+Arrays.deepToString(estimatedRatings));
+        for(double[] i: estimatedRatings){
+            for(double j: i){
+                System.out.print(new DecimalFormat("#.#").format(j));
+            }
+            System.out.println();
+        }
+        return estimatedRatings;
+        ////
+
+
+        //return svd.getS().getData();
+    }
+
+
+    private Map<Integer, Map<Integer, Double>> createUserHotelMatrix() {
+        List<ResidenceHistory> allHistories = residenceHistoryRepository.findAll();
+        Map<Integer, Map<Integer, Double>> userHotelMatrix = new HashMap<>();
+
+        for (ResidenceHistory history : allHistories) {
+            int userId = history.getUsers_rev().getId().intValue();
+            int hotelId = history.getHotel_rev().getId();
+            double grade = Optional.ofNullable(history.getGrade()).orElse(0);
+
+            userHotelMatrix.putIfAbsent(userId, new HashMap<>());
+            userHotelMatrix.get(userId).put(hotelId, grade);
+        }
+
+        System.out.println("userHotelMatrix:");
+        System.out.println(userHotelMatrix);
+
+        return userHotelMatrix;
+    }
+
+
     public List<Hotel> recommendHotels(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) return Collections.emptyList();
 
-        // Получаем описание профиля пользователя на основе его истории и оценок
+        Set<Integer> ratedHotelIds = getRatedHotelIds(userId);
         String userDescription = buildUserDescription(userId);
         Map<String, Double> idfScores = calculateIdfScores(hotelRepository.findAll());
+        Map<Integer, Map<Integer, Double>> userHotelMatrix = createUserHotelMatrix();
+        double[][] svdResults = calculateSVD(userHotelMatrix);
+        System.out.println("svdResults:"+ Arrays.deepToString(svdResults));
 
-        // Получаем список всех отелей и их профили
-        List<Hotel> allHotels = hotelRepository.findAll();
+        List<Hotel> allHotels = hotelRepository.findAll().stream()
+                .filter(hotel -> !ratedHotelIds.contains(hotel.getId()))
+                .collect(Collectors.toList());
+
         Map<Integer, Double> hotelScores = new HashMap<>();
+        //double scoreSVD = svdResults[user.getId().intValue()][0]; // Пример использования первой сингулярной значения для пользователя
+        //double scoreSVD = svdResults[user.getId().intValue()][0] + svdResults[user.getId().intValue()][1] + svdResults[user.getId().intValue()][2];
 
-        // Оцениваем каждый отель
+        SvdRatingPredictor predictor = new SvdRatingPredictor(userRepository, hotelRepository, residenceHistoryRepository);
+
         for (Hotel hotel : allHotels) {
             Double[] hotelProfile = getHotelProfile(hotel);
             double featureSimilarity = cosineSimilarity(buildUserProfile(userId), hotelProfile);
             double descriptionSimilarity = cosineSimilarityText(idfScores, userDescription, hotel.getDescription());
-            double combinedScore = 0.7 * featureSimilarity + 0.3 * descriptionSimilarity;
+            double predictedRatingSVD = predictor.predictRating(userId, Integer.toUnsignedLong(hotel.getId()));
+            double combinedScore = 0.7 * featureSimilarity + 0.3 * descriptionSimilarity + predictedRatingSVD;
+            System.out.println(hotel.getName()+":");
+            System.out.println("featureSimilarity:"+featureSimilarity);
+            System.out.println("descriptionSimilarity:"+descriptionSimilarity);
+            System.out.println("scoreSVD:"+predictedRatingSVD);
             hotelScores.put(hotel.getId(), combinedScore);
         }
 
@@ -52,6 +138,25 @@ public class HotelRecommendationService {
                 .collect(Collectors.toList());
     }
 
+//    private double getAverageRatingForHotel(int hotelId, Long userId) {
+//        // Получаем историю отзывов пользователя для данного отеля
+//        List<ResidenceHistory> histories = residenceHistoryRepository.findByUserIdAndHotelId(userId, hotelId);
+//        if (histories.isEmpty()) return 1.0; // Нет отзывов, нейтральный множитель
+//        return histories.stream()
+//                .mapToInt(ResidenceHistory::getGrade)
+//                .average()
+//                .orElse(1.0); // По умолчанию, если нет оценок, используем нейтральный множитель
+//    }
+
+    private Set<Integer> getRatedHotelIds(Long userId) {
+        List<ResidenceHistory> histories = residenceHistoryRepository.findByUserId(userId);
+        return histories.stream()
+                .map(history -> history.getHotel_rev().getId())
+                .collect(Collectors.toSet());
+    }
+
+
+
     // Строим "виртуальное описание" пользователя на основе его отзывов и оценок
     private String buildUserDescription(Long userId) {
         List<ResidenceHistory> userHistories = residenceHistoryRepository.findByUserId(userId);
@@ -59,7 +164,8 @@ public class HotelRecommendationService {
         for (ResidenceHistory history : userHistories) {
             if (history.getGrade() != null) {
                 String description = history.getHotel_rev().getDescription();
-                for (int i = 0; i < history.getGrade(); i++) {
+                int weight = history.getGrade(); // Оценка от 1 до 5
+                for (int i = 0; i < weight; i++) {
                     weightedDescription.append(description).append(" ");
                 }
             }
@@ -146,29 +252,52 @@ public class HotelRecommendationService {
     // Строим профиль пользователя на основе его истории пребывания
     private Double[] buildUserProfile(Long userId) {
         List<ResidenceHistory> userHistories = residenceHistoryRepository.findByUserId(userId);
-        Double[] userProfile = new Double[16];
-        Arrays.fill(userProfile, 0.0);
-        userHistories.forEach(history -> {
+        Map<Integer, Double[]> attributeScores = new HashMap<>();
+        Map<Integer, Integer> attributeWeights = new HashMap<>();
+
+        // Собираем все параметры и веса
+        for (ResidenceHistory history : userHistories) {
             Hotel hotel = history.getHotel_rev();
-            userProfile[0] += hotel.getFamily();
-            userProfile[1] += hotel.getChildren();
-            userProfile[2] += hotel.getTheYouth();
-            userProfile[3] += hotel.getOldFriends();
-            userProfile[4] += hotel.getComfort();
-            userProfile[5] += hotel.getDistance();
-            userProfile[6] += hotel.getPrice();
-            userProfile[7] += hotel.getActivity();
-            userProfile[8] += hotel.getSafety();
-            userProfile[9] += hotel.getActiveRecreationOnTheWater();
-            userProfile[10] += hotel.getFishing();
-            userProfile[11] += hotel.getFootball();
-            userProfile[12] += hotel.getVolleyball();
-            userProfile[13] += hotel.getTableTennis();
-            userProfile[14] += hotel.getTennis();
-            userProfile[15] += hotel.getCycling();
-        });
+            int weight = history.getGrade() != null ? history.getGrade() : 1; // Используем оценку как вес
+            updateAttributeScores(attributeScores, attributeWeights, 0, hotel.getFamily(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 1, hotel.getChildren(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 2, hotel.getTheYouth(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 3, hotel.getOldFriends(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 4, hotel.getComfort(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 5, hotel.getDistance(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 6, hotel.getPrice(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 7, hotel.getActivity(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 8, hotel.getSafety(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 9, hotel.getActiveRecreationOnTheWater(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 10, hotel.getFishing(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 11, hotel.getFootball(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 12, hotel.getVolleyball(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 13, hotel.getTableTennis(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 14, hotel.getTennis(), weight);
+            updateAttributeScores(attributeScores, attributeWeights, 15, hotel.getCycling(), weight);
+        }
+
+        // Рассчитываем взвешенное среднее для каждого атрибута
+        Double[] userProfile = new Double[16];
+        for (int i = 0; i < userProfile.length; i++) {
+            if (attributeWeights.get(i) != null && attributeWeights.get(i) > 0) {
+                userProfile[i] = attributeScores.get(i)[0] / attributeWeights.get(i);
+            } else {
+                userProfile[i] = 0.0;
+            }
+        }
         return userProfile;
     }
+
+    private void updateAttributeScores(Map<Integer, Double[]> scores, Map<Integer, Integer> weights, int index, double value, int weight) {
+        if (!scores.containsKey(index)) {
+            scores.put(index, new Double[]{0.0});
+            weights.put(index, 0);
+        }
+        scores.get(index)[0] += value * weight;
+        weights.put(index, weights.get(index) + weight);
+    }
+
 
     // Рассчитываем косинусное сходство между числовыми профилями
     private double cosineSimilarity(Double[] userProfile, Double[] hotelProfile) {

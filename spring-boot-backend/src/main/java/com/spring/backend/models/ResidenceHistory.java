@@ -111,6 +111,20 @@ public class ResidenceHistory {
         return hotel_rev;
     }
 
+    @Override
+    public String toString() {
+        return "ResidenceHistory{" +
+                "id=" + id +
+                ", checkInDate=" + checkInDate +
+                ", checkOutDate=" + checkOutDate +
+                ", totalCost=" + totalCost +
+                ", review='" + review + '\'' +
+                ", grade=" + grade +
+                //", user_rev=" + user_rev +
+                //", hotel_rev=" + hotel_rev +
+                '}';
+    }
+
     public void setHotel_rev(Hotel hotel_rev) {
         this.hotel_rev = hotel_rev;
     }

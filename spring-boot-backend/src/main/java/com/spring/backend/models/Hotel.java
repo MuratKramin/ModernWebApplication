@@ -41,14 +41,14 @@ public class Hotel {
     @Column (name = "main_feature")
     private String main_feature;
 
-    //@JsonIgnore
-    @JsonManagedReference("hotel-photo-ref")
+    @JsonIgnore
+    //@JsonManagedReference("hotel-photo-ref")
     @OneToMany(mappedBy = "hotel_pic")
     private List<Photo> photoList;
 
-    //@JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "hotel_rev")
-    @JsonManagedReference("hotel-back-ref")
+    //@JsonManagedReference("hotel-back-ref")
     private List<ResidenceHistory> residenceHistoryList;
 
     public List<ResidenceHistory> getResidenceHistoryList() {
