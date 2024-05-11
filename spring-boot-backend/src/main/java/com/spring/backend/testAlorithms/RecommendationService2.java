@@ -25,11 +25,51 @@ public class RecommendationService2 {
     @Autowired
     private ResidenceHistoryRepository residenceHistoryRepository;
 
+
+    public void test(){
+        List<User> users = userRepository.findAll();
+        List<Hotel> hotels = hotelRepository.findAll();
+        Map<Integer, Map<Integer, Integer>> ratingsMatrix = new HashMap<>();
+
+        // Initialize matrix
+        users.forEach(user -> ratingsMatrix.put(user.getId().intValue(), new HashMap<>()));
+        hotels.forEach(hotel -> users.forEach(user -> ratingsMatrix.get(user.getId().intValue()).put(hotel.getId(), null)));
+
+        // Populate matrix with actual ratings
+        for (User user : users) {
+            List<ResidenceHistory> histories = residenceHistoryRepository.findByUserId(user.getId());
+//            for(ResidenceHistory i:residenceHistoryRepository.findAll()){
+//                //System.out.println(i.toString());
+//            }
+//            histories.forEach(residenceHistory -> System.out.println("Grade:"+residenceHistory.getGrade()));
+            histories.forEach(history ->
+                    ratingsMatrix.get(user.getId().intValue()).put(history.getHotel_rev().getId(), history.getGrade()));
+
+        }
+
+        // Print the matrix
+        System.out.println("Actual Ratings Matrix:");
+        printMatrix(ratingsMatrix, hotels);
+
+    }
+
+    public void printMyMatrix(){
+        System.out.println("My_matrix");
+        for(User i: userRepository.findAll()){
+            for(ResidenceHistory j:i.getResidenceHistoryList()){
+
+                System.out.print(j.getGrade()+" ");
+            }
+            System.out.println();
+        }
+    }
+
     public List<Hotel> recommendHotels(Long userId, int topN) {
-        residenceHistoryRepository.findAll().forEach(residenceHistory -> System.out.println("grae:"+residenceHistory.getGrade()));
+        //residenceHistoryRepository.findAll().forEach(residenceHistory -> System.out.println("grade:"+residenceHistory.getGrade()));
         List<User> users = userRepository.findAll();
         Map<User, List<ResidenceHistory>> userHistories = users.stream()
-                .collect(Collectors.toMap(user -> user, user -> residenceHistoryRepository.findByUserId(user.getId())));
+                .collect(Collectors.
+                        toMap(user -> user, user -> residenceHistoryRepository.findByUserId(user.getId())));
 
         Map<User, Double> userMeanRatings = calculateMeanRatings(userHistories);
         normalizeRatings(userHistories, userMeanRatings);
@@ -46,6 +86,7 @@ public class RecommendationService2 {
             double mean = histories.stream().mapToInt(ResidenceHistory::getGrade).average().orElse(0);
             meanRatings.put(entry.getKey(), mean);
         }
+        System.out.println(meanRatings);
         return meanRatings;
     }
 
@@ -58,6 +99,7 @@ public class RecommendationService2 {
                 history.setGrade((int) (history.getGrade() - meanRating));
             });
         }
+
     }
 
     private Map<Hotel, Map<Hotel, Double>> calculateCosineSimilarity(List<Hotel> hotels, Map<User, List<ResidenceHistory>> userHistories, Map<User, Double> userMeanRatings) {
@@ -89,7 +131,8 @@ public class RecommendationService2 {
         return similarities;
     }
 
-    private List<Hotel> getTopNRecommendations(User user, List<Hotel> hotels, Map<Hotel, Map<Hotel, Double>> similarities, int topN) {
+    private List<Hotel> getTopNRecommendations
+            (User user, List<Hotel> hotels, Map<Hotel, Map<Hotel, Double>> similarities, int topN) {
         Map<Hotel, Double> scores = new HashMap<>();
         List<ResidenceHistory> userHistories = residenceHistoryRepository.findByUserId(user.getId());
 
@@ -126,11 +169,12 @@ public class RecommendationService2 {
         // Populate matrix with actual ratings
         for (User user : users) {
             List<ResidenceHistory> histories = residenceHistoryRepository.findByUserId(user.getId());
-            for(ResidenceHistory i:residenceHistoryRepository.findAll()){
-                System.out.println(i.toString());
-            }
-            histories.forEach(residenceHistory -> System.out.println("Grade:"+residenceHistory.getGrade()));
-            histories.forEach(history -> ratingsMatrix.get(user.getId().intValue()).put(history.getHotel_rev().getId(), history.getGrade()));
+//            for(ResidenceHistory i:residenceHistoryRepository.findAll()){
+//                //System.out.println(i.toString());
+//            }
+//            histories.forEach(residenceHistory -> System.out.println("Grade:"+residenceHistory.getGrade()));
+            histories.forEach(history ->
+                    ratingsMatrix.get(user.getId().intValue()).put(history.getHotel_rev().getId(), history.getGrade()));
 
         }
 
@@ -144,11 +188,19 @@ public class RecommendationService2 {
         List<Hotel> hotels = hotelRepository.findAll();
         Map<Integer, Map<Integer, Integer>> ratingsMatrix = new HashMap<>();
 
-        // Initialize matrix
+        // Initialize matrix and populate with existing ratings
         users.forEach(user -> ratingsMatrix.put(user.getId().intValue(), new HashMap<>()));
-        hotels.forEach(hotel -> users.forEach(user -> ratingsMatrix.get(user.getId().intValue()).put(hotel.getId(), null)));
+        hotels.forEach(hotel -> users.forEach(user -> {
+            List<ResidenceHistory> histories = residenceHistoryRepository.findByUserId(user.getId());
+            Integer existingRating = histories.stream()
+                    .filter(h -> Integer.valueOf(h.getHotel_rev().getId()).equals(hotel.getId()))
+                    .findFirst()
+                    .map(ResidenceHistory::getGrade)
+                    .orElse(null);
+            ratingsMatrix.get(user.getId().intValue()).put(hotel.getId(), existingRating);
+        }));
 
-        // Calculate predicted ratings and update matrix
+        // Calculate predicted ratings for missing ratings
         Map<User, List<ResidenceHistory>> userHistories = users.stream()
                 .collect(Collectors.toMap(user -> user, user -> residenceHistoryRepository.findByUserId(user.getId())));
         Map<User, Double> userMeanRatings = calculateMeanRatings(userHistories);
@@ -156,26 +208,57 @@ public class RecommendationService2 {
 
         for (User user : users) {
             Map<Integer, Integer> userRatings = ratingsMatrix.get(user.getId().intValue());
+            List<ResidenceHistory> histories = userHistories.get(user);
+            Set<Integer> ratedHotels = histories.stream().map(h -> h.getHotel_rev().getId()).collect(Collectors.toSet());
+
             for (Hotel hotel : hotels) {
-                userRatings.put(hotel.getId(), predictRating(user, hotel, similarities, userHistories.get(user), userMeanRatings));
+                if (!ratedHotels.contains(hotel.getId())) { // Only predict for hotels not rated by the user
+                    Integer predictedRating = predictRating(user, hotel, similarities, histories, userMeanRatings);
+                    userRatings.put(hotel.getId(), predictedRating);
+                }
             }
         }
 
-        // Print the predicted matrix
-        System.out.println("Predicted Ratings Matrix:");
+        // Print the matrix including both existing and predicted ratings
+        System.out.println("Complete Ratings Matrix:");
         printMatrix(ratingsMatrix, hotels);
     }
 
+
+
     private void printMatrix(Map<Integer, Map<Integer, Integer>> matrix, List<Hotel> hotels) {
-        System.out.print("User\\Hotel");
+        final String ANSI_RESET = "\u001B[0m";
+        final String ANSI_BLUE = "\u001B[34m";
+
+        System.out.print("Us\\Hot:");
         hotels.forEach(hotel -> System.out.print("\t" + hotel.getId()));
         System.out.println();
+
         matrix.forEach((userId, ratings) -> {
-            System.out.print("User " + userId);
-            ratings.forEach((hotelId, rating) -> System.out.print("\t" + (rating == null ? " " : rating)));
+            System.out.print("User " + userId+":");
+            ratings.forEach((hotelId, rating) -> {
+                if (rating == null) {
+                    System.out.print("\t ");
+                } else {
+                    // Check if it is an existing rating or a predicted one
+                    ResidenceHistory history = residenceHistoryRepository.findByUserId((long) userId)
+                            .stream()
+                            .filter(h -> Integer.valueOf(h.getHotel_rev().getId()).equals(hotelId))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (history != null) {
+                        System.out.print("\t" + rating);
+                    } else {
+                        // This is a predicted rating
+                        System.out.print("\t" + ANSI_BLUE + rating + ANSI_RESET);
+                    }
+                }
+            });
             System.out.println();
         });
     }
+
 
     private Integer predictRating(User user, Hotel hotel, Map<Hotel, Map<Hotel, Double>> similarities, List<ResidenceHistory> userHistories, Map<User, Double> userMeanRatings) {
         double score = 0;

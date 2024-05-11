@@ -40,6 +40,11 @@ public class HotelController {
     @Autowired
     private RecommendationService2 recommendationService2;
 
+    @Autowired
+    private RecommendationService3 recommendationService3;
+    @Autowired
+    private RecommendationService4 recommendationService4;
+
     // Создание нового отеля
     @PostMapping
     public ResponseEntity<Hotel> createHotel(@Valid @RequestBody Hotel hotel) {
@@ -73,8 +78,14 @@ public class HotelController {
 //            System.out.println(hotel.getName());
 //        }
         //recommendationService.recommendHotels();
-        recommendationService2.printRatingMatrix();
+        //recommendationService2.printRatingMatrix();
         //recommendationService2.printPredictedRatingMatrix();
+        //recommendationService2.printMyMatrix();
+        //recommendationService2.recommendHotels(Integer.toUnsignedLong(1),5).forEach(hotel -> System.out.println("Hotel_id"+hotel.getId()));
+
+        //recommendationService3.generateRecommendations();
+
+        recommendationService4.generateRecommendations();
         if (hotels.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

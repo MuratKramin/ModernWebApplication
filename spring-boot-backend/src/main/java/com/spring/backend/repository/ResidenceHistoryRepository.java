@@ -1,5 +1,6 @@
 package com.spring.backend.repository;
 
+import com.spring.backend.models.Hotel;
 import com.spring.backend.models.ResidenceHistory;
 import com.spring.backend.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,8 +22,14 @@ public interface ResidenceHistoryRepository extends JpaRepository<ResidenceHisto
 
     //List<ResidenceHistory> findByUserRev(User user);
     //List<ResidenceHistory> findByUser(User user);
+
+//    List<ResidenceHistory> findResidenceHistoriesByHotel_rev(Hotel hotel);
+//    List<ResidenceHistory> findResidenceHistoriesByUser_rev(User user);
     @Query(value = "SELECT * FROM residence_history WHERE id_user = ?1", nativeQuery = true)
     List<ResidenceHistory> findByUserId(Long userId);
+
+    @Query(value = "SELECT * FROM residence_history WHERE id_user = ?1 AND id_hotel= ?2", nativeQuery = true)
+    List<ResidenceHistory> findByUserIdandHotelId(Integer userId,Integer hotelId);
 
     @Modifying
     @Transactional

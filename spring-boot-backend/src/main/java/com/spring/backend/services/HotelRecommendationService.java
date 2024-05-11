@@ -31,52 +31,7 @@ public class HotelRecommendationService {
 
 
 
-    private double[][] calculateSVD(Map<Integer, Map<Integer, Double>> matrix) {
-        // Переводим карту в массив для SVD
-        int numRows = matrix.size();
-        int numCols = matrix.values().stream().mapToInt(m -> m.size()).max().orElse(0);
-        double[][] data = new double[numRows][numCols];
 
-        for(int i=0;i<numRows;i++){
-            for(int j=0;j<numCols;j++){
-                Random random = new Random();
-                int randomNumber = random.nextInt(5) + 1; // Генерация числа от 0 до 4 и добавление 1 для получения числа от 1 до 5
-                data[i][j]=randomNumber;
-            }
-        }
-
-        int rowIndex = 0;
-        for (Map<Integer, Double> row : matrix.values()) {
-            int colIndex = 0;
-            for (Double value : row.values()) {
-                data[rowIndex][colIndex++] = value;
-            }
-            rowIndex++;
-        }
-        System.out.println("data:");
-        System.out.println(Arrays.deepToString(data));
-
-//        Array2DRowRealMatrix realMatrix = new Array2DRowRealMatrix(data);
-//        SingularValueDecomposition svd = new SingularValueDecomposition(realMatrix);
-
-        ////
-        SingularValueDecomposition svd = new SingularValueDecomposition(new Array2DRowRealMatrix(data));
-        double[][] estimatedRatings = svd.getSolver().getInverse().multiply(new Array2DRowRealMatrix(data)).getData();
-
-
-        System.out.println("estimated"+Arrays.deepToString(estimatedRatings));
-        for(double[] i: estimatedRatings){
-            for(double j: i){
-                System.out.print(new DecimalFormat("#.#").format(j));
-            }
-            System.out.println();
-        }
-        return estimatedRatings;
-        ////
-
-
-        //return svd.getS().getData();
-    }
 
 
     private Map<Integer, Map<Integer, Double>> createUserHotelMatrix() {
@@ -106,30 +61,21 @@ public class HotelRecommendationService {
         Set<Integer> ratedHotelIds = getRatedHotelIds(userId);
         String userDescription = buildUserDescription(userId);
         Map<String, Double> idfScores = calculateIdfScores(hotelRepository.findAll());
-        Map<Integer, Map<Integer, Double>> userHotelMatrix = createUserHotelMatrix();
-        double[][] svdResults = calculateSVD(userHotelMatrix);
-        System.out.println("svdResults:"+ Arrays.deepToString(svdResults));
 
         List<Hotel> allHotels = hotelRepository.findAll().stream()
                 .filter(hotel -> !ratedHotelIds.contains(hotel.getId()))
                 .collect(Collectors.toList());
 
         Map<Integer, Double> hotelScores = new HashMap<>();
-        //double scoreSVD = svdResults[user.getId().intValue()][0]; // Пример использования первой сингулярной значения для пользователя
-        //double scoreSVD = svdResults[user.getId().intValue()][0] + svdResults[user.getId().intValue()][1] + svdResults[user.getId().intValue()][2];
-
-        SvdRatingPredictor predictor = new SvdRatingPredictor(userRepository, hotelRepository, residenceHistoryRepository);
 
         for (Hotel hotel : allHotels) {
             Double[] hotelProfile = getHotelProfile(hotel);
             double featureSimilarity = cosineSimilarity(buildUserProfile(userId), hotelProfile);
             double descriptionSimilarity = cosineSimilarityText(idfScores, userDescription, hotel.getDescription());
-            double predictedRatingSVD = predictor.predictRating(userId, Integer.toUnsignedLong(hotel.getId()));
-            double combinedScore = 0.7 * featureSimilarity + 0.3 * descriptionSimilarity + predictedRatingSVD;
+            double combinedScore = 0.7 * featureSimilarity + 0.3 * descriptionSimilarity;
             System.out.println(hotel.getName()+":");
             System.out.println("featureSimilarity:"+featureSimilarity);
             System.out.println("descriptionSimilarity:"+descriptionSimilarity);
-            System.out.println("scoreSVD:"+predictedRatingSVD);
             hotelScores.put(hotel.getId(), combinedScore);
         }
 
