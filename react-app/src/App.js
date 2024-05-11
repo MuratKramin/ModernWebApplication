@@ -8,6 +8,7 @@ import AuthService from "./services/auth.service";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
+import Main from "./components/Main"
 import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardModerator from "./components/BoardModerator";
@@ -52,17 +53,32 @@ const App = () => {
   };
 
   return (
-      <div>
+      <div style={{
+        backgroundImage: "url('https://sun9-61.userapi.com/impg/b2iC32PN4B7tSwckVwH74Rd2pCqihNfzOugQaw/pfC2ONrXUpU.jpg?size=1442x2160&quality=96&sign=30d851392093eddc42ccf1e5b753662d&type=album')",
+        backgroundSize: 'cover',
+        backgroundAttachment: 'fixed',
+        minHeight: '100vh', // Убедитесь, что минимальная высота контейнера достаточна для заполнения экрана
+        width: '100%'
+      }}>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
           <Link to={"/home"} className="navbar-brand">
             Nature_Navigator
           </Link>
           <div className="navbar-nav mr-auto">
+
             <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
+              <Link to={"/main"} className="nav-link">
+                Main
               </Link>
             </li>
+
+            <li className="nav-item">
+              <Link to={"/home"} className="nav-link">
+                Choose
+              </Link>
+            </li>
+
+
 
             {showModeratorBoard && (
                 <li className="nav-item">
@@ -128,6 +144,7 @@ const App = () => {
 
         <div className="container mt-3">
           <Switch>
+            <Route exact path={[ "/main"]} component={Main} />
             <Route exact path={["/", "/home"]} component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />

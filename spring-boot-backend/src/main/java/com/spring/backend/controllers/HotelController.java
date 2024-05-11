@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -66,12 +67,22 @@ public class HotelController {
         return new ResponseEntity<>(hotels, HttpStatus.OK);
     }
 
-    @GetMapping("/getRecom")
-    public ResponseEntity<List<Hotel>> getRecom() {
+    @GetMapping("/popular")
+    public List<Hotel> getPopularHotels() {
+        List<Integer> hotelIds = hotelRepository.findPopularHotelIds();
+        return hotelIds.stream()
+                .map(id -> hotelRepository.findById(id).orElse(null))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/getRecommendations/{userId}")
+    public ResponseEntity<List<Hotel>> getRecommendations(@PathVariable int userId) {
+
+        List<Hotel> recommendHotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(userId));;
 
         //residenceHistoryRepository.findAll().forEach(residenceHistory -> System.out.println(residenceHistory.getGrade()));
-        List<Hotel> hotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(3));
-        recommendationSystem.recommendHotels();
+        List<Hotel> hotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(userId));
+        //recommendationSystem.recommendHotels();
         //bprService.recommendHotels();
         //List<Hotel> rec =recommendationService.recommendHotels(Integer.toUnsignedLong(1),5);
 //        for(Hotel hotel:rec){
@@ -86,10 +97,10 @@ public class HotelController {
         //recommendationService3.generateRecommendations();
 
         recommendationService4.generateRecommendations();
-        if (hotels.isEmpty()) {
+        if (recommendHotels.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(hotels, HttpStatus.OK);
+        return new ResponseEntity<>(recommendHotels, HttpStatus.OK);
     }
 
     @GetMapping("/stats")

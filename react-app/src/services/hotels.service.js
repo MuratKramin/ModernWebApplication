@@ -4,6 +4,10 @@ const getHotel = () => {
     return api.get("/hotels");
 };
 
+const getPopular = () => {
+    return api.get("/hotels");
+};
+
 const getHotelById = (id) => {
     return api.get(`/hotels/${id}`);
 };
@@ -14,6 +18,10 @@ const getStats = () => {
 
 const getResidenceHistory = (id) => {
     return api.get(`/hotels/${id}/residenceHistory`);
+};
+
+const getRecommendedByUserId = (userId) => {
+    return api.get(`/hotels/getRecommendations/${userId}`);
 };
 
 
@@ -63,6 +71,8 @@ const findHotels = ({
 
 const HotelService = {
     getHotel,
+    getPopular,
+    getRecommendedByUserId,
     getHotelById,
     getStats,
     findHotels,

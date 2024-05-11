@@ -18,6 +18,9 @@ public interface HotelRepository extends JpaRepository<Hotel,Integer> {
     @Query(value = "select * from hotels  order by id",nativeQuery = true)
     List<Hotel> AllHotelsSortById();
 
+    @Query("SELECT h.id FROM Hotel h JOIN h.residenceHistoryList rhl GROUP BY h.id ORDER BY COUNT(rhl) DESC, AVG(rhl.grade) DESC")
+    List<Integer> findPopularHotelIds();
+
 
 
     @Query(value = "select sum(family * (?1) +" +

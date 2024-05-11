@@ -66,8 +66,8 @@ function HotelDetails() {
     if (!hotel) {
         return <div>Loading...</div>;
     }
-    const mainImages = hotel.photoList?.slice(0, 2);
-    const otherImages = hotel.photoList?.slice(2);
+    const mainImages = hotel.photoList?.slice(0, 1);
+    const otherImages = hotel.photoList?.slice(1);
 
     return (
         <div className="container">

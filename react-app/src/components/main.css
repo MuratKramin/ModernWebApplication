@@ -1,0 +1,55 @@
+/* Стили для горизонтальной прокрутки популярных отелей */
+.scrolling-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Убираем стандартный скроллбар в Firefox */
+}
+
+.scrolling-wrapper::-webkit-scrollbar {
+    display: none; /* Убираем стандартный скроллбар в Webkit-браузерах */
+}
+
+/* Стили для карточек */
+.my-card {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    margin: 10px;
+    transition: transform 0.2s; /* Анимация увеличения при наведении */
+}
+.card-pop{
+    flex: 0 0 auto;
+    width: 18rem;
+    margin: 14px;
+    transition: transform 0.2s; /* Анимация увеличения при наведении */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Увеличиваем карточку при наведении */
+}
+
+.card-pop:hover {
+    transform: scale(1.05); /* Увеличиваем карточку при наведении */
+}
+/* Стилизация выделенных карточек */
+.highlighted {
+    border-radius: 10px;
+    border: 2px solid greenyellow; /* Золотая рамка для выделения */
+    background-color: #e3efb4; /* Светлый фоновый цвет для выделения */
+}
+
+/* Стили для номеров на карточках рекомендованных отелей */
+.card-body-number {
+    font-size: 20px; /* Увеличиваем размер шрифта для номера */
+    font-weight: bold; /* Жирный шрифт для номера */
+    position: absolute; /* Абсолютное позиционирование внутри карточки */
+    top: 10px; /* Расположение от верхнего края карточки */
+    left: 10px; /* Расположение от левого края карточки */
+    color: #333; /* Цвет шрифта */
+    background-color: rgba(255, 255, 255, 0.9); /* Небольшая прозрачность для фона номера */
+    padding: 5px 10px; /* Отступы вокруг текста */
+    border-radius: 10px; /* Скругление углов */
+}

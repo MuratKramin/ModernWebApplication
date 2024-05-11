@@ -1,0 +1,77 @@
+.main{
+    background-image: url('https://sun9-61.userapi.com/impg/b2iC32PN4B7tSwckVwH74Rd2pCqihNfzOugQaw/pfC2ONrXUpU.jpg?size=1442x2160&quality=96&sign=30d851392093eddc42ccf1e5b753662d&type=album');
+    background-size: cover;
+    /*background-repeat: no-repeat;*/
+    background-attachment: fixed;
+    border-radius: 4px;
+    display: flex;
+    padding-top: 2%;
+    padding-right: 3%;
+    padding-bottom: 3%;
+}
+.form{
+    /*padding-left: 5%;*/
+    padding-right: 2%;
+    margin-right:1%;
+}
+.results{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+img{
+    object-fit: cover;
+    width: 400px;
+    height: 400px;
+
+    border-radius: 10px;
+    box-shadow: 0 0 10px #444;
+    margin: 1%;
+}
+
+
+/* Стили для горизонтальной прокрутки популярных отелей */
+.scrolling-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Убираем стандартный скроллбар в Firefox */
+}
+
+.scrolling-wrapper::-webkit-scrollbar {
+    display: none; /* Убираем стандартный скроллбар в Webkit-браузерах */
+}
+
+/* Стили для карточек */
+.mycard {
+    flex: 0 0 auto;
+    width: 18rem;
+    margin: 10px;
+    transition: transform 0.2s; /* Анимация увеличения при наведении */
+}
+
+.mycard:hover {
+    transform: scale(1.05); /* Увеличиваем карточку при наведении */
+}
+
+/* Стилизация выделенных карточек */
+.highlighted {
+    border-radius: 10px;
+    border: 2px solid greenyellow; /* Золотая рамка для выделения */
+    background-color: #e3efb4; /* Светлый фоновый цвет для выделения */
+}
+
+/* Стили для номеров на карточках рекомендованных отелей */
+.card-body-number {
+    font-size: 20px; /* Увеличиваем размер шрифта для номера */
+    font-weight: bold; /* Жирный шрифт для номера */
+    position: absolute; /* Абсолютное позиционирование внутри карточки */
+    top: 10px; /* Расположение от верхнего края карточки */
+    left: 10px; /* Расположение от левого края карточки */
+    color: #333; /* Цвет шрифта */
+    background-color: rgba(255, 255, 255, 0.9); /* Небольшая прозрачность для фона номера */
+    padding: 5px 10px; /* Отступы вокруг текста */
+    border-radius: 10px; /* Скругление углов */
+}

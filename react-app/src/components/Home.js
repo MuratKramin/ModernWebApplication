@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserService from "../services/user.service";
 import Hotel from "./Hotels";
-import "./hotel.css";
+import "./home.css";
 import HotelService from "../services/hotels.service";
 import { Link } from "react-router-dom";
 
@@ -100,9 +100,9 @@ const Home = () => {
 
   return (
       <div className="container">
-        <header className="jumbotron">
-          <h3>{content}</h3>
-        </header>
+        {/*<header className="jumbotron">*/}
+        {/*  <h3>{content}</h3>*/}
+        {/*</header>*/}
 
         <div className="main">
           <form onSubmit={handleSubmit} className="form">
@@ -173,18 +173,40 @@ const Home = () => {
             <input type="submit" value="Search Hotels" />
           </form>
 
+          {/*<div>*/}
+          {/*  {Array.isArray(content2) && content2.map(hotel => (*/}
+          {/*      <div key={hotel.id}>*/}
+
+          {/*        <Link to={`/hotel/${hotel.id}`}><h2>{hotel.name}</h2>*/}
+          {/*          <img src={hotel.photoList[0] ? hotel.photoList[0].link : ''} alt={hotel.name} />*/}
+          {/*        </Link>*/}
+
+          {/*        <p style={{ whiteSpace: 'pre-line' }}>{hotel.description}</p>*/}
+
+          {/*      </div>*/}
+          {/*  )) || <div> <h3>Упс! Нет подходящих отелей </h3> </div>}*/}
+          {/*</div>*/}
+
           <div>
-            {Array.isArray(content2) && content2.map(hotel => (
-                <div key={hotel.id}>
+            <div className="container mt-4">
+              <h2>Места отдыха по вашим параметрам:</h2>
+              <div className="row">
+                {Array.isArray(content2) && content2.map((hotel, index) => (
+                    <div className={`col-md-6 ${index < 3 ? 'highlighted' : ''}`} key={hotel.id}>
+                      <div className="card mb-3" style={{width: '100%'}}>
+                        <Link to={`/hotel/${hotel.id}`} >
+                        <div className="card-body-number">{index + 1}</div>
+                        <img src={hotel.photoList[0].link} className="card-img-top" alt={hotel.name} />
+                        <div className="card-body">
+                          <h5 className="card-title">{hotel.name}</h5>
 
-                  <Link to={`/hotel/${hotel.id}`}><h2>{hotel.name}</h2>
-                    <img src={hotel.photoList[0] ? hotel.photoList[0].link : ''} alt={hotel.name} />
-                  </Link>
-
-                  <p style={{ whiteSpace: 'pre-line' }}>{hotel.description}</p>
-
-                </div>
-            )) || <div> <h3>Упс! Нет подходящих отелей </h3> </div>}
+                        </div>
+                       </Link>
+                      </div>
+                    </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
