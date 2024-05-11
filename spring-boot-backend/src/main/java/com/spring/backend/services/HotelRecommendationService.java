@@ -28,6 +28,8 @@ public class HotelRecommendationService {
     @Autowired
     private ResidenceHistoryRepository residenceHistoryRepository;
 
+    @Autowired
+    private RecommendationService4 recommendationService4;
 
 
 
@@ -67,12 +69,31 @@ public class HotelRecommendationService {
                 .collect(Collectors.toList());
 
         Map<Integer, Double> hotelScores = new HashMap<>();
+        Map<Integer, Double> hotelsPredictedScores= recommendationService4.getMapForUserId(userId.intValue());
+        //userProfile
 
         for (Hotel hotel : allHotels) {
             Double[] hotelProfile = getHotelProfile(hotel);
             double featureSimilarity = cosineSimilarity(buildUserProfile(userId), hotelProfile);
             double descriptionSimilarity = cosineSimilarityText(idfScores, userDescription, hotel.getDescription());
-            double combinedScore = 0.7 * featureSimilarity + 0.3 * descriptionSimilarity;
+
+            double colaborativeScore = 0;
+
+            //for(Map.Entry<Integer,Double> i:hotelsPredictedScores.entrySet());
+//            hotelsPredictedScores.forEach((hotelId,rating)->{
+//                if(hotelId==hotel.getId()){
+//                    colaborativeScore=rating;
+//                }
+//            });
+            for (Map.Entry<Integer, Double> entry : hotelsPredictedScores.entrySet()) {
+                if (entry.getKey() == hotel.getId()) {
+                    colaborativeScore = entry.getValue();
+                    break; // Для остановки цикла после нахождения соответствующего значения
+                }
+            }
+
+
+            double combinedScore = 0.7 * featureSimilarity + 0.3 * descriptionSimilarity+colaborativeScore;
             System.out.println(hotel.getName()+":");
             System.out.println("featureSimilarity:"+featureSimilarity);
             System.out.println("descriptionSimilarity:"+descriptionSimilarity);
@@ -234,6 +255,46 @@ public class HotelRecommendationService {
         }
         return userProfile;
     }
+
+//    private Double[] buildUserProfileUnLogin() {
+//        Map<Integer, Double[]> attributeScores = new HashMap<>();
+//        Map<Integer, Integer> attributeWeights = new HashMap<>();
+//
+//        // Собираем все параметры и веса
+//        for (ResidenceHistory history : userHistories) {
+//            Hotel hotel = history.getHotel_rev();
+//            int weight = history.getGrade() != null ? history.getGrade() : 1; // Используем оценку как вес
+//            updateAttributeScores(attributeScores, attributeWeights, 0, hotel.getFamily(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 1, hotel.getChildren(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 2, hotel.getTheYouth(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 3, hotel.getOldFriends(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 4, hotel.getComfort(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 5, hotel.getDistance(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 6, hotel.getPrice(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 7, hotel.getActivity(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 8, hotel.getSafety(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 9, hotel.getActiveRecreationOnTheWater(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 10, hotel.getFishing(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 11, hotel.getFootball(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 12, hotel.getVolleyball(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 13, hotel.getTableTennis(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 14, hotel.getTennis(), weight);
+//            updateAttributeScores(attributeScores, attributeWeights, 15, hotel.getCycling(), weight);
+//        }
+//
+//        // Рассчитываем взвешенное среднее для каждого атрибута
+//        Double[] userProfile = new Double[16];
+//        for (int i = 0; i < userProfile.length; i++) {
+//            if (attributeWeights.get(i) != null && attributeWeights.get(i) > 0) {
+//                userProfile[i] = attributeScores.get(i)[0] / attributeWeights.get(i);
+//            } else {
+//                userProfile[i] = 0.0;
+//            }
+//        }
+//        return userProfile;
+//    }
+
+
 
     private void updateAttributeScores(Map<Integer, Double[]> scores, Map<Integer, Integer> weights, int index, double value, int weight) {
         if (!scores.containsKey(index)) {

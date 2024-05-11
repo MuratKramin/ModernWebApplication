@@ -70,7 +70,7 @@ public class HotelController {
     public ResponseEntity<List<Hotel>> getRecom() {
 
         //residenceHistoryRepository.findAll().forEach(residenceHistory -> System.out.println(residenceHistory.getGrade()));
-        List<Hotel> hotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(1));
+        List<Hotel> hotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(3));
         recommendationSystem.recommendHotels();
         //bprService.recommendHotels();
         //List<Hotel> rec =recommendationService.recommendHotels(Integer.toUnsignedLong(1),5);

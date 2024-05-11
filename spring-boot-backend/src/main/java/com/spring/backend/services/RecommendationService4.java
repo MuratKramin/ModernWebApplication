@@ -7,7 +7,6 @@ import com.spring.backend.repository.ResidenceHistoryRepository;
 import com.spring.backend.repository.UserRepository;
 import org.apache.spark.sql.sources.In;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,9 +26,32 @@ public class RecommendationService4 {
     @Autowired
     private UserRepository userRepository;
 
+    Map<Integer, Map<Integer, Double>> predictedRatings = new HashMap<>();
 
+    public List<Hotel> getRecommendationForUserId(Integer userId){
+        if (!predictedRatings.containsKey(userId)) {
+            return Collections.emptyList();  // Если нет предсказаний для данного пользователя, возвращаем пустой список
+        }
 
-    public void generateRecommendations() {
+        Map<Integer, Double> userRatings = predictedRatings.get(userId);
+        List<Hotel> hotels = hotelRepository.findAll();
+        // Фильтруем и сортируем отели на основе предсказанных оценок
+        return hotels.stream()
+                .filter(hotel -> userRatings.containsKey(hotel.getId()))
+                .sorted(Comparator.comparing(hotel -> userRatings.get(hotel.getId()), Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+
+    }
+
+    public Map<Integer, Double> getMapForUserId(Integer userId){
+        if (!predictedRatings.containsKey(userId)) {
+            return Collections.emptyMap();  // Если нет предсказаний для данного пользователя, возвращаем пустой список
+        }
+
+        return predictedRatings.get(userId);
+    }
+
+    public Map<Integer, Map<Integer, Double>> generateRecommendations() {
         List<ResidenceHistory> histories = residenceHistoryRepository.findAll();
         List<Hotel> hotels = hotelRepository.findAll();
 
@@ -93,7 +115,7 @@ public class RecommendationService4 {
 
 
         // Предсказание оценок
-        Map<Integer, Map<Integer, Double>> predictedRatings = new HashMap<>();
+
 
 
         userRepository.findAll().forEach(user -> {
@@ -159,6 +181,7 @@ public class RecommendationService4 {
         predictedRatings.forEach((userId, userRatings) -> {
             System.out.println("User " + userId + ": " + userRatings);
         });
+        return predictedRatings;
     }
 
     private void printMatrix(Map<Integer, Map<Integer, Double>> ratings){
