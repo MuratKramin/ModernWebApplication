@@ -51,6 +51,18 @@ public class Hotel {
     @JsonManagedReference("hotel-back-ref")
     private List<ResidenceHistory> residenceHistoryList;
 
+    @OneToMany(mappedBy = "hotel")
+    @JsonManagedReference("hotel-back-ref-likes")
+    private List<Likes> likesList;
+
+    public List<Likes> getLikesList() {
+        return likesList;
+    }
+
+    public void setLikesList(List<Likes> likesList) {
+        this.likesList = likesList;
+    }
+
     public List<ResidenceHistory> getResidenceHistoryList() {
         return residenceHistoryList;
     }

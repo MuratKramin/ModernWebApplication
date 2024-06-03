@@ -53,3 +53,15 @@
     padding: 5px 10px; /* Отступы вокруг текста */
     border-radius: 10px; /* Скругление углов */
 }
+
+/* Добавим некоторые стили для кнопки сердца */
+.heart-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #c0b7b7; /* Цвет сердечка */
+    font-size: 24px; /* Размер иконки */
+}

@@ -4,6 +4,7 @@ package com.spring.backend.controllers;
 import com.spring.backend.models.Hotel;
 import com.spring.backend.models.ResidenceHistory;
 import com.spring.backend.repository.HotelRepository;
+import com.spring.backend.repository.LikesRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
 import com.spring.backend.services.*;
 import com.spring.backend.testAlorithms.BPRService;
@@ -29,7 +30,7 @@ public class HotelController {
     @Autowired
     private HotelRepository hotelRepository;
     @Autowired
-    private HotelRecommendationService hotelRecommendationService;
+    private HybridRecommendationService hybridRecommendationService;
     @Autowired
     private RecommendationSystem recommendationSystem;
     @Autowired
@@ -44,7 +45,10 @@ public class HotelController {
     @Autowired
     private RecommendationService3 recommendationService3;
     @Autowired
-    private RecommendationService4 recommendationService4;
+    private CollaborativeFilteringService collaborativeFilteringService;
+
+    @Autowired
+    private LikesRepository likesRepository;
 
     // Создание нового отеля
     @PostMapping
@@ -78,10 +82,10 @@ public class HotelController {
     @GetMapping("/getRecommendations/{userId}")
     public ResponseEntity<List<Hotel>> getRecommendations(@PathVariable int userId) {
 
-        List<Hotel> recommendHotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(userId));;
+        List<Hotel> recommendHotels = hybridRecommendationService.recommendHotels(Integer.toUnsignedLong(userId));;
 
         //residenceHistoryRepository.findAll().forEach(residenceHistory -> System.out.println(residenceHistory.getGrade()));
-        List<Hotel> hotels = hotelRecommendationService.recommendHotels(Integer.toUnsignedLong(userId));
+        List<Hotel> hotels = hybridRecommendationService.recommendHotels(Integer.toUnsignedLong(userId));
         //recommendationSystem.recommendHotels();
         //bprService.recommendHotels();
         //List<Hotel> rec =recommendationService.recommendHotels(Integer.toUnsignedLong(1),5);
@@ -96,7 +100,18 @@ public class HotelController {
 
         //recommendationService3.generateRecommendations();
 
-        recommendationService4.generateRecommendations();
+        likesRepository.findAll().forEach(likes -> System.out.println("OPPPA"+likes.getId()));
+        System.out.println(likesRepository.findAll());
+        likesRepository.findAll().forEach(likes -> {
+            System.out.println("------");
+            System.out.println(likes.getId());
+            System.out.println(likes.getHotel().getId());
+            System.out.println(likes.getUser().getId());
+        });
+
+
+
+        collaborativeFilteringService.generateRecommendations();
         if (recommendHotels.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

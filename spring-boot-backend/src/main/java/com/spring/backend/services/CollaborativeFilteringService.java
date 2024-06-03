@@ -5,7 +5,6 @@ import com.spring.backend.models.ResidenceHistory;
 import com.spring.backend.repository.HotelRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
 import com.spring.backend.repository.UserRepository;
-import org.apache.spark.sql.sources.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class RecommendationService4 {
+public class CollaborativeFilteringService {
 
     @Autowired
     private ResidenceHistoryRepository residenceHistoryRepository;

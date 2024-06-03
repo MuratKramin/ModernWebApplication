@@ -26,6 +26,10 @@ const Profile = () => {
         {currentUser.roles &&
           currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}
       </ul>
+        <ul>
+            {currentUser.likedHotels &&
+                currentUser.likedHotels.map((role, index) => <li key={index}>{role}</li>)}
+        </ul>
     </div>
   );
 };

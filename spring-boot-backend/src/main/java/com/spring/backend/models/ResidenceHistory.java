@@ -16,7 +16,7 @@ public class ResidenceHistory {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue()
     private int id;
     @Basic
     @Column(name = "check_in_date")

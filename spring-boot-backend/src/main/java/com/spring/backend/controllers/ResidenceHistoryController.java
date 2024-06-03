@@ -53,6 +53,9 @@ public class ResidenceHistoryController {
     // Создать новую историю проживания
     @PostMapping
     public ResidenceHistory createResidenceHistory(@RequestBody ResidenceHistory residenceHistory) {
+        System.out.println(residenceHistory);
+        residenceHistory.setId(0);
+        System.out.println(residenceHistory);
         return residenceHistoryRepository.save(residenceHistory);
     }
 

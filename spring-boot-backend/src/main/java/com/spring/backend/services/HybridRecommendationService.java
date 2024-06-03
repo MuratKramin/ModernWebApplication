@@ -6,20 +6,16 @@ import com.spring.backend.models.User;
 import com.spring.backend.repository.HotelRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
 import com.spring.backend.repository.UserRepository;
-import com.spring.backend.testAlorithms.SvdRatingPredictor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.SingularValueDecomposition;
-
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
-public class HotelRecommendationService {
+public class HybridRecommendationService {
 
     @Autowired
     private UserRepository userRepository;
@@ -29,7 +25,7 @@ public class HotelRecommendationService {
     private ResidenceHistoryRepository residenceHistoryRepository;
 
     @Autowired
-    private RecommendationService4 recommendationService4;
+    private CollaborativeFilteringService collaborativeFilteringService;
 
 
 
@@ -69,7 +65,7 @@ public class HotelRecommendationService {
                 .collect(Collectors.toList());
 
         Map<Integer, Double> hotelScores = new HashMap<>();
-        Map<Integer, Double> hotelsPredictedScores= recommendationService4.getMapForUserId(userId.intValue());
+        Map<Integer, Double> hotelsPredictedScores= collaborativeFilteringService.getMapForUserId(userId.intValue());
         //userProfile
 
         for (Hotel hotel : allHotels) {
