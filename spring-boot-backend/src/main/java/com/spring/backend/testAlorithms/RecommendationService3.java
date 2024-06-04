@@ -1,4 +1,4 @@
-package com.spring.backend.services;
+package com.spring.backend.testAlorithms;
 
 import com.spring.backend.models.ResidenceHistory;
 import com.spring.backend.repository.HotelRepository;

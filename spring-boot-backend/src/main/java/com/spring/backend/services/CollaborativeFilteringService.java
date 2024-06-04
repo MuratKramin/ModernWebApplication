@@ -95,27 +95,7 @@ public class CollaborativeFilteringService {
 
         }
 
-        // Вычисление косинусного сходства
-//        Map<Integer, List<Map.Entry<Integer, Double>>> similarities = new HashMap<>();
-//        for (int hotelId1 : hotels.stream().map(Hotel::getId).toList()) {
-//
-//            Map<Integer, Double> similarityScores = new HashMap<>();
-//            for (int hotelId2 : hotels.stream().map(Hotel::getId).toList()) {
-//                if (hotelId1 != hotelId2) {
-//                    double similarity = calculateCosineSimilarity(centeredRatings, hotelId1, hotelId2);
-//                    similarityScores.put(hotelId2, similarity);
-//                }
-//            }
-//            List<Map.Entry<Integer, Double>> sortedSimilarities = new ArrayList<>(similarityScores.entrySet());
-//            sortedSimilarities.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-//            similarities.put(hotelId1, sortedSimilarities);
-//        }
-
-
-
         // Предсказание оценок
-
-
 
         userRepository.findAll().forEach(user -> {
             Map<Integer, Double> userPredictions = new HashMap<>();
@@ -152,28 +132,6 @@ public class CollaborativeFilteringService {
             });
             predictedRatings.put(userId, userPredictions);
         });
-
-
-
-
-//        ratings.forEach((userId, userRatings) -> {
-//            Map<Integer, Double> userPredictions = new HashMap<>();
-//            userRatings.keySet().forEach(hotelId -> {
-//                List<Map.Entry<Integer, Double>> nearest = similarities.get(hotelId);
-//                if (nearest.size() > 1) {
-//                    double topSimilaritiesSum = nearest.get(0).getValue() + nearest.get(1).getValue();
-//                    double weightedSum = 0.0;
-//                    for (int i = 0; i < 2; i++) {
-//                        Map.Entry<Integer, Double> entry = nearest.get(i);
-//                        weightedSum += ratings.get(userId).getOrDefault(entry.getKey(), averages.get(userId)) * entry.getValue();
-//                    }
-//                    userPredictions.put(hotelId, weightedSum / topSimilaritiesSum);
-//                } else {
-//                    userPredictions.put(hotelId, averages.get(userId));
-//                }
-//            });
-//            predictedRatings.put(userId, userPredictions);
-//        });
 
         // Вывод матрицы оценок
         System.out.println("Final ratings matrix:");

@@ -1,0 +1,18 @@
+private Map<Integer, Map<Integer, Double>> createUserHotelMatrix() {
+        List<ResidenceHistory> allHistories = residenceHistoryRepository.findAll();
+        Map<Integer, Map<Integer, Double>> userHotelMatrix = new HashMap<>();
+
+        for (ResidenceHistory history : allHistories) {
+            int userId = history.getUsers_rev().getId().intValue();
+            int hotelId = history.getHotel_rev().getId();
+            double grade = Optional.ofNullable(history.getGrade()).orElse(0);
+
+            userHotelMatrix.putIfAbsent(userId, new HashMap<>());
+            userHotelMatrix.get(userId).put(hotelId, grade);
+        }
+
+        System.out.println("userHotelMatrix:");
+        System.out.println(userHotelMatrix);
+
+        return userHotelMatrix;
+    }

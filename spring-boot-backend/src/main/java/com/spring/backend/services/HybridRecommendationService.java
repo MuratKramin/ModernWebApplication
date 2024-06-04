@@ -27,30 +27,8 @@ public class HybridRecommendationService {
     @Autowired
     private CollaborativeFilteringService collaborativeFilteringService;
 
-
-
-
-
-
-    private Map<Integer, Map<Integer, Double>> createUserHotelMatrix() {
-        List<ResidenceHistory> allHistories = residenceHistoryRepository.findAll();
-        Map<Integer, Map<Integer, Double>> userHotelMatrix = new HashMap<>();
-
-        for (ResidenceHistory history : allHistories) {
-            int userId = history.getUsers_rev().getId().intValue();
-            int hotelId = history.getHotel_rev().getId();
-            double grade = Optional.ofNullable(history.getGrade()).orElse(0);
-
-            userHotelMatrix.putIfAbsent(userId, new HashMap<>());
-            userHotelMatrix.get(userId).put(hotelId, grade);
-        }
-
-        System.out.println("userHotelMatrix:");
-        System.out.println(userHotelMatrix);
-
-        return userHotelMatrix;
-    }
-
+    @Autowired
+    private ContentFilteringService contentFilteringService;
 
     public List<Hotel> recommendHotels(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
@@ -70,17 +48,13 @@ public class HybridRecommendationService {
 
         for (Hotel hotel : allHotels) {
             Double[] hotelProfile = getHotelProfile(hotel);
-            double featureSimilarity = cosineSimilarity(buildUserProfile(userId), hotelProfile);
-            double descriptionSimilarity = cosineSimilarityText(idfScores, userDescription, hotel.getDescription());
+            //double featureSimilarity = cosineSimilarity(buildUserProfile(userId), hotelProfile);
+            //double descriptionSimilarity = cosineSimilarityText(idfScores, userDescription, hotel.getDescription());
 
+            double featureSimilarity = (contentFilteringService.getFeatureSimilarity(hotel,userId)-0.9)*10;
+            double descriptionSimilarity = (contentFilteringService.getTextSimilarity(hotel,userId))*10;
             double colaborativeScore = 0;
 
-            //for(Map.Entry<Integer,Double> i:hotelsPredictedScores.entrySet());
-//            hotelsPredictedScores.forEach((hotelId,rating)->{
-//                if(hotelId==hotel.getId()){
-//                    colaborativeScore=rating;
-//                }
-//            });
             for (Map.Entry<Integer, Double> entry : hotelsPredictedScores.entrySet()) {
                 if (entry.getKey() == hotel.getId()) {
                     colaborativeScore = entry.getValue();
@@ -89,7 +63,7 @@ public class HybridRecommendationService {
             }
 
 
-            double combinedScore = 0.7 * featureSimilarity + 0.3 * descriptionSimilarity+colaborativeScore;
+            double combinedScore = 0.7 * featureSimilarity+ 0.3 * descriptionSimilarity+colaborativeScore;
             System.out.println(hotel.getName()+":");
             System.out.println("featureSimilarity:"+featureSimilarity);
             System.out.println("descriptionSimilarity:"+descriptionSimilarity);
@@ -101,15 +75,6 @@ public class HybridRecommendationService {
                 .collect(Collectors.toList());
     }
 
-//    private double getAverageRatingForHotel(int hotelId, Long userId) {
-//        // Получаем историю отзывов пользователя для данного отеля
-//        List<ResidenceHistory> histories = residenceHistoryRepository.findByUserIdAndHotelId(userId, hotelId);
-//        if (histories.isEmpty()) return 1.0; // Нет отзывов, нейтральный множитель
-//        return histories.stream()
-//                .mapToInt(ResidenceHistory::getGrade)
-//                .average()
-//                .orElse(1.0); // По умолчанию, если нет оценок, используем нейтральный множитель
-//    }
 
     private Set<Integer> getRatedHotelIds(Long userId) {
         List<ResidenceHistory> histories = residenceHistoryRepository.findByUserId(userId);
@@ -251,45 +216,6 @@ public class HybridRecommendationService {
         }
         return userProfile;
     }
-
-//    private Double[] buildUserProfileUnLogin() {
-//        Map<Integer, Double[]> attributeScores = new HashMap<>();
-//        Map<Integer, Integer> attributeWeights = new HashMap<>();
-//
-//        // Собираем все параметры и веса
-//        for (ResidenceHistory history : userHistories) {
-//            Hotel hotel = history.getHotel_rev();
-//            int weight = history.getGrade() != null ? history.getGrade() : 1; // Используем оценку как вес
-//            updateAttributeScores(attributeScores, attributeWeights, 0, hotel.getFamily(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 1, hotel.getChildren(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 2, hotel.getTheYouth(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 3, hotel.getOldFriends(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 4, hotel.getComfort(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 5, hotel.getDistance(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 6, hotel.getPrice(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 7, hotel.getActivity(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 8, hotel.getSafety(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 9, hotel.getActiveRecreationOnTheWater(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 10, hotel.getFishing(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 11, hotel.getFootball(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 12, hotel.getVolleyball(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 13, hotel.getTableTennis(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 14, hotel.getTennis(), weight);
-//            updateAttributeScores(attributeScores, attributeWeights, 15, hotel.getCycling(), weight);
-//        }
-//
-//        // Рассчитываем взвешенное среднее для каждого атрибута
-//        Double[] userProfile = new Double[16];
-//        for (int i = 0; i < userProfile.length; i++) {
-//            if (attributeWeights.get(i) != null && attributeWeights.get(i) > 0) {
-//                userProfile[i] = attributeScores.get(i)[0] / attributeWeights.get(i);
-//            } else {
-//                userProfile[i] = 0.0;
-//            }
-//        }
-//        return userProfile;
-//    }
-
 
 
     private void updateAttributeScores(Map<Integer, Double[]> scores, Map<Integer, Integer> weights, int index, double value, int weight) {

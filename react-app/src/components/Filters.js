@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import UserService from "../services/user.service";
-import Hotel from "./Hotels";
-import "./home.css";
+
+import "./filters.css";
 import HotelService from "../services/hotels.service";
 import { Link } from "react-router-dom";
 import LikesService from "../services/likes.service";
 import AuthService from "../services/auth.service";
 
-const Home = () => {
+const Filters = () => {
   const [content, setContent] = useState("");
   const [content2, setContent2] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
@@ -420,4 +420,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Filters;
