@@ -7,10 +7,7 @@ import com.spring.backend.repository.HotelRepository;
 import com.spring.backend.repository.LikesRepository;
 import com.spring.backend.repository.ResidenceHistoryRepository;
 import com.spring.backend.services.*;
-import com.spring.backend.testAlorithms.BPRService;
-import com.spring.backend.testAlorithms.RecommendationService;
-import com.spring.backend.testAlorithms.RecommendationService2;
-import com.spring.backend.testAlorithms.RecommendationSystem;
+import com.spring.backend.testAlorithms.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,19 +28,6 @@ public class HotelController {
     private HotelRepository hotelRepository;
     @Autowired
     private HybridRecommendationService hybridRecommendationService;
-    @Autowired
-    private RecommendationSystem recommendationSystem;
-    @Autowired
-    private BPRService bprService;
-
-    @Autowired
-    private RecommendationService recommendationService;
-
-    @Autowired
-    private RecommendationService2 recommendationService2;
-
-    @Autowired
-    private RecommendationService3 recommendationService3;
     @Autowired
     private CollaborativeFilteringService collaborativeFilteringService;
 

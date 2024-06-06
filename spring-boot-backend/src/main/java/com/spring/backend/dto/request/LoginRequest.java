@@ -1,4 +1,4 @@
-package com.spring.backend.payload.request;
+package com.spring.backend.dto.request;
 
 import javax.validation.constraints.NotBlank;
 

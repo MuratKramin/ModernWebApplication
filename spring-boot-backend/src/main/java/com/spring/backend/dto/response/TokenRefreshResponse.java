@@ -1,4 +1,4 @@
-package com.spring.backend.payload.response;
+package com.spring.backend.dto.response;
 
 public class TokenRefreshResponse {
   private String accessToken;
